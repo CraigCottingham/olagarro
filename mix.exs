@@ -24,6 +24,7 @@ defmodule Olagarro.MixProject do
   defp deps do
     [
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
+      {:credo, "~> 0.10.2", only: [:dev, :test], runtime: false},
       {:espec, "~> 1.6", only: :test},
       {:ex_machina, "~> 2.2"},
       {:mix_test_watch, "~> 0.9.0", only: :dev, runtime: false},
