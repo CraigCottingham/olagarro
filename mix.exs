@@ -6,8 +6,10 @@ defmodule Olagarro.MixProject do
       app: :olagarro,
       version: "0.1.0",
       elixir: "~> 1.7",
+      elixirc_paths: ["lib", "spec/factories"],
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      preferred_cli_env: [espec: :test],
+      deps: deps(),
     ]
   end
 
@@ -21,8 +23,10 @@ defmodule Olagarro.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
+      {:espec, "~> 1.6", only: :test},
+      {:ex_machina, "~> 2.2"},
+      {:mix_test_watch, "~> 0.9.0", only: :dev, runtime: false},
     ]
   end
 end
