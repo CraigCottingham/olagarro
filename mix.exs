@@ -6,6 +6,7 @@ defmodule Olagarro.MixProject do
       app: :olagarro,
       version: "0.1.0",
       elixir: "~> 1.7",
+      elixirc_paths: ["lib", "spec/factories"],
       start_permanent: Mix.env() == :prod,
       preferred_cli_env: [espec: :test],
       deps: deps(),
