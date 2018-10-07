@@ -25,6 +25,7 @@ if Mix.env == :dev do
   config :mix_test_watch,
     tasks: [
       "espec",
+      "credo --strict",
     ],
     clear: true
 end
