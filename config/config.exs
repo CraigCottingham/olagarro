@@ -25,7 +25,8 @@ if Mix.env == :dev do
   config :mix_test_watch,
     tasks: [
       "espec",
-    ]
+    ],
+    clear: true
 end
 
 # It is also possible to import configuration files, relative to this
