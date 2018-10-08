@@ -3,6 +3,8 @@ defmodule Olagarro.PDF do
   Top-level functions for PDF handling, including file I/O.
   """
 
+  alias Olagarro.PDF.Document
+
   @doc """
   Read a PDF document from an I/O stream.
 
@@ -17,11 +19,11 @@ defmodule Olagarro.PDF do
   ## Examples
 
       iex> File.stream!(\"../spec/data/document.pdf\") |> Olagarro.PDF.decode
-      []
+      %Olagarro.PDF.Document{}
 
   """
-  def decode(_stream, _options \\ []) do
-    []
+  def decode(stream, options \\ []) do
+    Document.decode(stream, options)
   end
 
   @doc """
