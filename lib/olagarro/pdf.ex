@@ -38,12 +38,11 @@ defmodule Olagarro.PDF do
 
   ## Examples
 
-      iex> nil |> Olagarro.PDF.encode
+      iex> %Olagarro.PDF.Document{} |> Olagarro.PDF.encode
       []
 
   """
-  def encode(_stream, _options \\ []) do
-    []
+  def encode(%Document{} = document, options \\ []) do
+    Document.encode(document, options)
   end
-
 end
