@@ -6,8 +6,9 @@ defmodule Olagarro.PDF.Document.Factory do
   use ExMachina
 
   def document_factory(version \\ "1.7") do
-    Enum.join([
+    [
       "PDF-#{version}",
-    ], "\n") <> <<10>>
+    ] |> Enum.map(fn item -> item <> <<10>> end)
+      |> Enum.join
   end
 end
