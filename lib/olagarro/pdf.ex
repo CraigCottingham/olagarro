@@ -19,7 +19,7 @@ defmodule Olagarro.PDF do
   ## Examples
 
       iex> File.stream!(\"../spec/data/document.pdf\") |> Olagarro.PDF.decode
-      %Olagarro.PDF.Document{}
+      %Olagarro.PDF.Document{eol_marker: :lf}
 
   """
   def decode(stream, options \\ []) do

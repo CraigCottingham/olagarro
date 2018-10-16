@@ -3,7 +3,10 @@ defmodule Olagarro.PDF.Document do
   Defines a structure representing a PDF document.
   """
 
-  defstruct [:version]
+  defstruct [
+    :version,
+    :eol_marker
+  ]
 
   @doc """
   Read a PDF document from an I/O stream.
@@ -19,11 +22,20 @@ defmodule Olagarro.PDF.Document do
   ## Examples
 
       iex> File.stream!(\"../spec/data/document.pdf\") |> Olagarro.PDF.Document.decode
-      %Olagarro.PDF.Document{}
+      %Olagarro.PDF.Document{eol_marker: :lf}
 
   """
-  def decode(_stream, _options \\ []) do
-    %Olagarro.PDF.Document{}
+  def decode(_stream, options \\ []) do
+    options = options |> with_defaults
+
+    %Olagarro.PDF.Document{eol_marker: (options |> Keyword.get(:eol_marker, :lf))}
+  end
+
+  defp with_defaults(options) do
+    options
+    |> Keyword.merge(
+      eol_marker: options |> Keyword.get(:eol_marker, :lf)
+    )
   end
 
   @doc """
