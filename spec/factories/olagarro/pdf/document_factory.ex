@@ -7,7 +7,8 @@ defmodule Olagarro.PDF.Document.Factory do
 
   def document_factory(version \\ "1.7") do
     [
-      "PDF-#{version}",
+      "%PDF-#{version}",
+      # Olagarro.PDF.Comment.Factory.comment_factory(),
     ] |> Enum.map(fn item -> item <> <<10>> end)
       |> Enum.join
   end

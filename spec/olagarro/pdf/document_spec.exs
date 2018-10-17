@@ -8,7 +8,7 @@ defmodule Olagarro.PDF.Document.Spec do
 
   doctest Olagarro.PDF.Document
 
-  it do: expect (document_factory()) |> to(eq("PDF-1.7" <> <<10>>))
-  it do: expect (document_factory("1.3")) |> to(eq("PDF-1.3" <> <<10>>))
-  it do: expect (document_factory("1.7")) |> to(eq("PDF-1.7" <> <<10>>))
+  it do: expect (document_factory()) |> to(eq("%PDF-1.7" <> <<10>>))
+  it do: expect (document_factory("1.3")) |> to(eq("%PDF-1.3" <> <<10>>))
+  it do: expect (document_factory("1.7")) |> to(eq("%PDF-1.7" <> <<10>>))
 end
