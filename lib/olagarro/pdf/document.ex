@@ -1,9 +1,12 @@
-defmodule Olagarro.PDF do
+defmodule Olagarro.PDF.Document do
   @moduledoc """
-  Top-level functions for PDF handling, including file I/O.
+  Defines a structure representing a PDF document.
   """
 
-  alias Olagarro.PDF.Document
+  defstruct [
+    :version,
+    :eol_marker
+  ]
 
   @doc """
   Read a PDF document from an I/O stream.
@@ -18,12 +21,21 @@ defmodule Olagarro.PDF do
 
   ## Examples
 
-      iex> File.stream!(\"../spec/data/document.pdf\") |> Olagarro.PDF.decode
+      iex> File.stream!(\"../spec/data/document.pdf\") |> Olagarro.PDF.Document.decode
       %Olagarro.PDF.Document{eol_marker: :lf}
 
   """
-  def decode(stream, options \\ []) do
-    Document.decode(stream, options)
+  def decode(_stream, options \\ []) do
+    options = options |> with_defaults
+
+    %Olagarro.PDF.Document{eol_marker: (options |> Keyword.get(:eol_marker, :lf))}
+  end
+
+  defp with_defaults(options) do
+    options
+    |> Keyword.merge(
+      eol_marker: options |> Keyword.get(:eol_marker, :lf)
+    )
   end
 
   @doc """
@@ -42,7 +54,7 @@ defmodule Olagarro.PDF do
       []
 
   """
-  def encode(%Document{} = document, options \\ []) do
-    Document.encode(document, options)
+  def encode(%Olagarro.PDF.Document{} = _document, _options \\ []) do
+    []
   end
 end

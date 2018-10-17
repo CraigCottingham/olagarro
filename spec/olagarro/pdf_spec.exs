@@ -4,9 +4,6 @@ defmodule Olagarro.PDF.Spec do
   """
 
   use ESpec
-  import Olagarro.PDF.Factory
 
   doctest Olagarro.PDF
-
-  it do: expect (document_factory()) |> to(eq("PDF-1.3" <> <<10>>))
 end
