@@ -5,11 +5,8 @@ defmodule Olagarro.PDF.Document.Factory do
 
   use ExMachina
 
-  def document_factory(version \\ "1.7") do
-    [
-      "%PDF-#{version}",
-      # Olagarro.PDF.Comment.Factory.comment_factory(),
-    ] |> Enum.map(fn item -> item <> <<10>> end)
-      |> Enum.join
+  def document_factory(options \\ []) do
+    Olagarro.PDF.Header.Factory.header_factory(options)
+    |> Enum.join
   end
 end
