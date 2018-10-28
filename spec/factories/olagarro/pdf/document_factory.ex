@@ -5,8 +5,6 @@ defmodule Olagarro.PDF.Document.Factory do
 
   use ExMachina
 
-  # require IEx
-
   import FactoryHelpers
   import Olagarro.PDF.Dictionary.Factory
   import Olagarro.PDF.Header.Factory
@@ -27,10 +25,7 @@ defmodule Olagarro.PDF.Document.Factory do
     # xref object
     |> cons(xref_factory())
     |> cons("%%EOF") # end of file marker
-    |> List.flatten
-    |> Enum.map(fn item -> item <> <<10>> end)
-    # |> (fn list -> IEx.pry; list end).()
-    |> Enum.join
+    |> to_binary
   end
 
 end
