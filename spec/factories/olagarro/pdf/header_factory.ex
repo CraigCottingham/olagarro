@@ -11,7 +11,6 @@ defmodule Olagarro.PDF.Header.Factory do
 
     ["%PDF-#{version}"]
     |> add_binary_hint(binary_hint)
-    |> Enum.map(fn item -> item <> <<10>> end)
   end
 
   # "olagarro" with the high bit set on every byte

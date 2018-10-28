@@ -5,8 +5,32 @@ defmodule Olagarro.PDF.Document.Factory do
 
   use ExMachina
 
+  # require IEx
+
+  import FactoryHelpers
+  import Olagarro.PDF.Dictionary.Factory
+  import Olagarro.PDF.Header.Factory
+  import Olagarro.PDF.IndirectObject.Factory
+  import Olagarro.PDF.Stream.Factory
+  import Olagarro.PDF.Xref.Factory
+
   def document_factory(options \\ []) do
-    Olagarro.PDF.Header.Factory.header_factory(options)
+    header_factory(options)
+    # catalog object
+    |> cons(dictionary_factory(:catalog) |> indirect_object_factory(object_number: 1))
+    # pages object
+    |> cons(dictionary_factory(:pages) |> indirect_object_factory(object_number: 2))
+    # page object
+    |> cons(dictionary_factory(:page) |> indirect_object_factory(object_number: 3))
+    # stream object
+    |> cons(stream_factory() |> indirect_object_factory(object_number: 4))
+    # xref object
+    |> cons(xref_factory())
+    |> cons("%%EOF") # end of file marker
+    |> List.flatten
+    |> Enum.map(fn item -> item <> <<10>> end)
+    # |> (fn list -> IEx.pry; list end).()
     |> Enum.join
   end
+
 end
