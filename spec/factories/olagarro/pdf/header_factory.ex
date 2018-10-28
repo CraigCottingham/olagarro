@@ -14,7 +14,7 @@ defmodule Olagarro.PDF.Header.Factory do
 
     ["%PDF-#{version}"]
     |> add_binary_hint(binary_hint)
-    |> convert_to_binary(as_binary)
+    |> to_binary(as_binary)
   end
 
   # "olagarro" with the high bit set on every byte
@@ -22,7 +22,4 @@ defmodule Olagarro.PDF.Header.Factory do
   defp add_binary_hint(list, false), do: list
   defp add_binary_hint(list, nil), do: list
   defp add_binary_hint(list, hint), do: list ++ [hint]
-
-  defp convert_to_binary(list, true), do: list |> to_binary
-  defp convert_to_binary(list, _), do: list
 end

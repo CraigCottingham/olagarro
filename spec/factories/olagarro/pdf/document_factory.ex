@@ -25,7 +25,7 @@ defmodule Olagarro.PDF.Document.Factory do
     # xref object
     |> cons(xref_factory())
     |> cons("%%EOF") # end of file marker
-    |> to_binary
+    |> to_binary(true)
   end
 
 end

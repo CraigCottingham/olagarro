@@ -5,10 +5,12 @@ defmodule Olagarro.PDF.Comment.Factory do
 
   use ExMachina
 
-  def comment_factory do
-    [
-      "% #{Faker.Lorem.sentence}",
-    ] |> Enum.map(fn item -> item <> <<10>> end)
-      |> Enum.join
+  import FactoryHelpers
+
+  def comment_factory(options \\ []) do
+    as_binary = Keyword.get(options, :as_binary, false)
+
+    ["% #{Faker.Lorem.sentence}"]
+    |> to_binary(as_binary)
   end
 end
