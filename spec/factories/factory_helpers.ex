@@ -5,9 +5,9 @@ defmodule FactoryHelpers do
 
   # require IEx
 
-  def cons(left, right) do
-    [left, right]
-  end
+  def cons(nil, right), do: [right]
+  def cons(left, nil), do: [left]
+  def cons(left, right), do: [left, right]
 
   def to_binary(list, true) do
     list

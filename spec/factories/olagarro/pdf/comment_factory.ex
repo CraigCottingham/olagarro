@@ -7,10 +7,10 @@ defmodule Olagarro.PDF.Comment.Factory do
 
   import FactoryHelpers
 
-  def comment_factory(options \\ []) do
+  def comment_factory(comment \\ " " <> Faker.Lorem.sentence, options \\ []) do
     as_binary = Keyword.get(options, :as_binary, false)
 
-    ["% #{Faker.Lorem.sentence}"]
+    ["%" <> comment]
     |> to_binary(as_binary)
   end
 end
