@@ -58,4 +58,36 @@ defmodule Olagarro.PDF.Document.Spec do
       it do: expect (document().eol_marker) |> to(eq(:cr))
     end
   end
+
+  describe "parsing comments" do
+    before do
+      {:ok, stream_pid} = StringIO.open(data())
+      {:shared, stream: stream_pid}
+    end
+
+    let :decoded, do: Olagarro.PDF.decode(shared.stream)
+    let :status, do: decoded() |> elem(0)
+    let :document, do: decoded() |> elem(1)
+
+    context "when eol-marker is :lf" do
+      let :data, do: "%PDF-1.7" <> <<10>> <> "% this is a comment" <> <<10>>
+      it do: expect (status()) |> to(eq(:ok))
+    end
+
+    context "when eol-marker is :lf and the comment contains a different EOL marker" do
+      let :data, do: "%PDF-1.7" <> <<10>> <> "% this is a comment containing " <> <<13, 10>>
+      it do: expect (status()) |> to(eq(:ok))
+      it do: expect (document().eol_marker) |> to(eq(:lf))
+    end
+
+    context "when eol-marker is :crlf" do
+      let :data, do: "%PDF-1.7" <> <<13, 10>> <> "% this is a comment" <> <<13, 10>>
+      it do: expect (status()) |> to(eq(:ok))
+    end
+
+    context "when eol-marker is :cr" do
+      let :data, do: "%PDF-1.7" <> <<13>> <> "% this is a comment" <> <<13>>
+      it do: expect (status()) |> to(eq(:ok))
+    end
+  end
 end
