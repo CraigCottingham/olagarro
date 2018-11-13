@@ -5,5 +5,5 @@ defmodule Olagarro.PDF.Spec do
 
   use ESpec
 
-  doctest Olagarro.PDF
+  # doctest Olagarro.PDF
 end

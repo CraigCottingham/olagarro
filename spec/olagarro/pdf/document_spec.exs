@@ -6,7 +6,7 @@ defmodule Olagarro.PDF.Document.Spec do
   use ESpec
   import Olagarro.PDF.Document.Factory
 
-  doctest Olagarro.PDF.Document
+  # doctest Olagarro.PDF.Document
 
   it do: expect (document_factory()) |> to(start_with("%PDF-1.7" <> <<10>> <> "%" <> <<239, 236, 225, 231, 225, 242, 242, 239>> <> <<10>>))
   it do: expect (document_factory(version: "1.3")) |> to(start_with("%PDF-1.3" <> <<10>> <> "%" <> <<239, 236, 225, 231, 225, 242, 242, 239>> <> <<10>>))
