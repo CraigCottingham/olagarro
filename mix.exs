@@ -29,6 +29,7 @@ defmodule Olagarro.MixProject do
       {:faker, "~> 0.11.0", only: :test},
       {:ex_machina, "~> 2.2"},
       {:mix_test_watch, "~> 0.9.0", only: :dev, runtime: false},
+      {:nimble_parsec, "~> 0.4.0"}
     ]
   end
 end
