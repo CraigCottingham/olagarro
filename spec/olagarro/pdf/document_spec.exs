@@ -90,4 +90,18 @@ defmodule Olagarro.PDF.Document.Spec do
       it do: expect (status()) |> to(eq(:ok))
     end
   end
+
+  describe "parsing a minimal document" do
+    before do
+      {:ok, stream_pid} = StringIO.open(data())
+      {:shared, stream: stream_pid}
+    end
+
+    let :decoded, do: Olagarro.PDF.decode(shared.stream)
+    let :status, do: decoded() |> elem(0)
+    let :document, do: decoded() |> elem(1)
+
+    let :data, do: document_factory()
+    it do: expect(status()) |> to(eq(:ok))
+  end
 end
