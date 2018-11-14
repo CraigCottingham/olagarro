@@ -6,20 +6,18 @@ defmodule Olagarro.PDF.Document.Factory do
   use ExMachina
 
   import FactoryHelpers
-  import Olagarro.PDF.Comment.Factory
-  import Olagarro.PDF.Dictionary.Factory
+  # import Olagarro.PDF.Comment.Factory
+  # import Olagarro.PDF.Dictionary.Factory
   import Olagarro.PDF.Header.Factory
-  import Olagarro.PDF.IndirectObject.Factory
-  import Olagarro.PDF.Stream.Factory
-  import Olagarro.PDF.Xref.Factory
+  # import Olagarro.PDF.IndirectObject.Factory
+  # import Olagarro.PDF.Stream.Factory
+  # import Olagarro.PDF.Xref.Factory
 
   def document_factory(options \\ []) do
     binary_hint = Keyword.get(options, :binary_hint, true)
 
     header_factory(options)
     |> cons(add_binary_hint(binary_hint))
-
-    |> cons(comment_factory(<<0xEF, 0xEC, 0xE1, 0xE7, 0xE1, 0xF2, 0xF2, 0xEF>>))
 
     # # catalog object
     # |> cons(dictionary_factory(:catalog) |> indirect_object_factory(object_number: 1))
