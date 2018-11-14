@@ -53,18 +53,17 @@ defmodule Olagarro.PDF.Document do
   defp decode_header({:ok, document, "%PDF-" <> <<major::size(8)>> <> "." <> <<minor::size(8), remaining::binary>>, stream}) do
     decode_eol_marker({:ok, %{document | version: "#{<<major::utf8>>}.#{<<minor::utf8>>}"}, remaining, stream})
   end
-  defp decode_header({:ok, document, remaining, stream}) do
-    if byte_size(remaining) < 8 do # "%PDF-1.x"
+  defp decode_header({:ok, document, buffer, stream}) do
+    if byte_size(buffer) < 8 do # "%PDF-1.x"
       case IO.binread(stream, 1024) do
         :eof ->
-          {:ok, document, remaining, stream}
+          {:ok, document, buffer, stream}
         {:error, _} = error_reason ->
           error_reason
         data ->
-          decode_header({:ok, document, remaining <> data, stream})
+          decode_header({:ok, document, buffer <> data, stream})
       end
     else
-      # didn't match header, so error
       {:error, :header_not_found}
     end
   end
@@ -73,15 +72,15 @@ defmodule Olagarro.PDF.Document do
   defp decode_eol_marker({:ok, document, <<10, remaining::binary>>, stream}), do: {:ok, %{document | eol_marker: :lf}, remaining, stream}
   defp decode_eol_marker({:ok, document, <<13, 10, remaining::binary>>, stream}), do: {:ok, %{document | eol_marker: :crlf}, remaining, stream}
   defp decode_eol_marker({:ok, document, <<13, remaining::binary>>, stream}), do: {:ok, %{document | eol_marker: :cr}, remaining, stream}
-  defp decode_eol_marker({:ok, document, remaining, stream}) do
-    if byte_size(remaining) < 2 do # <CR><LF>, in the worst case
+  defp decode_eol_marker({:ok, document, buffer, stream}) do
+    if byte_size(buffer) < 2 do # <CR><LF>, in the worst case
       case IO.binread(stream, 1024) do
         :eof ->
-          {:ok, document, remaining, stream}
+          {:ok, document, buffer, stream}
         {:error, _} = error_reason ->
           error_reason
         data ->
-          decode_eol_marker({:ok, document, remaining <> data, stream})
+          decode_eol_marker({:ok, document, buffer <> data, stream})
       end
     else
       {:error, :eol_marker_not_found}
@@ -89,23 +88,45 @@ defmodule Olagarro.PDF.Document do
   end
 
   defp decode_body({:ok, document, stream}), do: decode_body({:ok, document, "", stream})
-  defp decode_body({:ok, document, "%" <> remaining, stream}), do: strip_comment({:ok, document, remaining, stream})
-  defp decode_body({:ok, document, remaining, stream}) do
-    if byte_size(remaining) < 1 do
-      case IO.binread(stream, 1024) do
-        :eof ->
-          {:ok, document, remaining, stream}
-        {:error, _} = error_reason ->
-          error_reason
-        data ->
-          decode_body({:ok, document, remaining <> data, stream})
-      end
-    else
-      {:error, :eol_marker_not_found}
+  defp decode_body({:ok, document, "xref" <> remaining, stream}), do: {:ok, document, "xref" <> remaining, stream}
+  defp decode_body({:ok, document, "", stream}) do
+    case IO.binread(stream, 1024) do
+      :eof ->
+        {:ok, document, "", stream}
+      {:error, _} = error_reason ->
+        error_reason
+      data ->
+        decode_body({:ok, document, data, stream})
+    end
+  end
+  defp decode_body({:ok, document, buffer, stream}) do
+    case buffer do
+      "%" <> remaining ->
+        {:ok, document, remaining, stream}
+        |> strip_comment
+        |> decode_body
+      "xref" <> _ ->
+        {:ok, document, buffer, stream}
+      _ ->
+        {:ok, document, buffer, stream}
+        |> decode_object
+        |> decode_body
     end
   end
 
-  defp decode_xref({:ok, _document, _remaining, _stream} = state), do: state
+  defp decode_xref({:ok, document, stream}), do: decode_xref({:ok, document, "", stream})
+  defp decode_xref({:ok, document, "", stream}) do
+    case IO.binread(stream, 1024) do
+      :eof ->
+        {:ok, document, "", stream}
+      {:error, _} = error_reason ->
+        error_reason
+      data ->
+        decode_xref({:ok, document, data, stream})
+    end
+  end
+  defp decode_xref({:ok, _document, _buffer, _stream} = state), do: state
+
   defp decode_trailer({:ok, _document, _remaining, _stream} = state), do: state
 
   defp strip_comment({:ok, document, <<10, remaining::binary>>, stream}) do
@@ -140,6 +161,8 @@ defmodule Olagarro.PDF.Document do
     end
   end
   defp strip_comment({:ok, document, <<_::bytes-size(1), remaining::binary>>, stream}), do: strip_comment({:ok, document, remaining, stream})
+
+  defp decode_object({:ok, _document, _buffer, _stream} = state), do: state
 
   @doc """
   Write a PDF document to an I/O stream.
