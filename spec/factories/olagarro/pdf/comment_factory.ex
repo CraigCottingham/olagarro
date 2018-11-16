@@ -5,6 +5,8 @@ defmodule Olagarro.PDF.Comment.Factory do
 
   use ExMachina
 
+  require Faker
+
   import FactoryHelpers
 
   def comment_factory(comment \\ " " <> Faker.Lorem.sentence, options \\ []) do
